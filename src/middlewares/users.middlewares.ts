@@ -1,3 +1,4 @@
+import { ErrorWithStatus } from './../models/Errors'
 import { NextFunction, Request, Response } from 'express'
 import { checkSchema } from 'express-validator'
 import userService from '~/services/users.services'

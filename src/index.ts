@@ -1,21 +1,20 @@
-import express, { NextFunction, Request, Response } from 'express'
+import express from 'express'
 import usersRouter from './routes/users.routes'
 import databaseService from './services/database.services'
+import { defaultErrorHandler } from './middlewares/error.middlewares'
 const app = express()
+
+// Connect to MongoDB
+databaseService.connect()
 
 // It parses incoming requests with JSON payloads and is based on body-parser.
 app.use(express.json())
 
+// routes
 app.use('/users', usersRouter)
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.log(1)
-
-  res.status(400).json({ error: err.message })
-})
-
-// Connect to MongoDB
-databaseService.connect()
+// Error handling middleware
+app.use(defaultErrorHandler)
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000')
