@@ -5,7 +5,7 @@ import validate from '~/utils/validate'
 import { wrapRequestHandler } from '~/utils/handlers'
 const router = express.Router()
 
-router.post('/login', loginValidator, loginController)
+router.post('/login', validate(loginValidator), wrapRequestHandler(loginController))
 router.post('/register', validate(registerValidator), wrapRequestHandler(registerController))
 
 export default router
