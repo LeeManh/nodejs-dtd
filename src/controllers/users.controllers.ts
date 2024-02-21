@@ -20,7 +20,16 @@ export const registerController = async (req: Request, res: Response) => {
   const result = await userService.register(req.body)
 
   return res.json({
-    message: 'Register success',
+    message: USERS_MESSAGES.REGISTER_SUCCESS,
+    result
+  })
+}
+
+export const logoutController = async (req: Request, res: Response) => {
+  const result = await userService.logout({ refresh_token: req.body.refresh_token })
+
+  return res.json({
+    message: USERS_MESSAGES.LOGOUT_SUCCESS,
     result
   })
 }

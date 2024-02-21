@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import { capitalize } from 'lodash'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ErrorWithStatus } from '~/models/Errors'
+import { TokenPayload } from '~/models/requests/User.request'
 config()
 
 export const signToken = ({
@@ -34,13 +35,13 @@ export const verifyToken = ({
   token: string
   secretOrPrivateKey?: string
 }) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<TokenPayload>((resolve, reject) => {
     jwt.verify(token, secretOrPrivateKey, (err, decoded) => {
       if (err) {
         throw reject(new ErrorWithStatus({ message: capitalize(err.message), status: HTTP_STATUS.UNAUTHORIZED }))
       }
 
-      resolve(decoded)
+      resolve(decoded as TokenPayload)
     })
   })
 }

@@ -22,18 +22,13 @@ class DatabaseServices {
     this.db = this.client.db(process.env.DB_NAME)
   }
   async connect() {
-    try {
-      // Connect the client to the server	(optional starting in v4.7)
-      await this.client.connect()
+    // Connect the client to the server	(optional starting in v4.7)
+    await this.client.connect()
 
-      // Send a ping to confirm a successful connection
-      await this.db.command({ ping: 1 })
+    // Send a ping to confirm a successful connection
+    await this.db.command({ ping: 1 })
 
-      console.log('Pinged your deployment. You successfully connected to MongoDB!')
-    } catch (error) {
-      console.log('Error', error)
-      throw error
-    }
+    console.log('Pinged your deployment. You successfully connected to MongoDB!')
   }
   get users(): Collection<User> {
     return this.db.collection(process.env.DB_USERS_COLLECTION as string)
