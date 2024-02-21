@@ -1,8 +1,11 @@
 import { checkSchema } from 'express-validator'
+import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/message'
+import { ErrorWithStatus } from '~/models/Errors'
 import databaseService from '~/services/database.services'
 import userService from '~/services/users.services'
 import { hashPassword } from '~/utils/crypto'
+import { verifyToken } from '~/utils/jwt'
 
 export const loginValidator = checkSchema({
   email: {
@@ -157,4 +160,37 @@ export const registerValidator = checkSchema(
     }
   },
   ['body']
+)
+
+export const accessTokenValidator = checkSchema(
+  {
+    authorization: {
+      notEmpty: {
+        errorMessage: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED
+      },
+      isString: {
+        errorMessage: USERS_MESSAGES.ACCESS_TOKEN_MUST_BE_A_STRING
+      },
+      trim: true,
+      custom: {
+        options: async (value, { req }) => {
+          const accessToken = value.split(' ')[1]
+
+          if (!accessToken) {
+            throw new ErrorWithStatus({
+              message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
+              status: HTTP_STATUS.UNAUTHORIZED
+            })
+          }
+
+          const decoded_authorization = await verifyToken({ token: accessToken })
+
+          req.decoded_authorization = decoded_authorization
+
+          return true
+        }
+      }
+    }
+  },
+  ['headers']
 )
