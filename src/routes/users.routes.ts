@@ -3,9 +3,15 @@ import {
   loginValidator,
   registerValidator,
   accessTokenValidator,
-  refreshTokenValidator
+  refreshTokenValidator,
+  emailVerifyToken
 } from '~/middlewares/users.middlewares'
-import { loginController, registerController, logoutController } from '~/controllers/users.controllers'
+import {
+  loginController,
+  registerController,
+  logoutController,
+  emailVerifyController
+} from '~/controllers/users.controllers'
 import validate from '~/utils/validate'
 import { wrapRequestHandler } from '~/utils/handlers'
 const router = express.Router()
@@ -18,4 +24,6 @@ router.post(
   validate(refreshTokenValidator),
   wrapRequestHandler(logoutController)
 )
+router.post('/email-verify', validate(emailVerifyToken), wrapRequestHandler(emailVerifyController))
+
 export default router
