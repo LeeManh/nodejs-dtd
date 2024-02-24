@@ -182,6 +182,8 @@ export const accessTokenValidator = checkSchema(
             secretOrPrivateKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
           })
 
+          console.log('decoded_authorization', decoded_authorization)
+
           req.decoded_authorization = decoded_authorization
 
           return true

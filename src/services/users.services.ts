@@ -7,6 +7,7 @@ import { TokenType, UserVerifyStatus } from '~/constants/enum'
 import { ObjectId } from 'mongodb'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import { config } from 'dotenv'
+import { USERS_MESSAGES } from '~/constants/message'
 config()
 class UserService {
   private signAccessToken(user_id: string) {
@@ -75,8 +76,6 @@ class UserService {
       new RefreshToken({ token: refresh_token, user_id: new ObjectId(user_id) })
     )
 
-    console.log('email_verify_token', email_verify_token)
-
     return { access_token, refresh_token }
   }
   async checkEmailExist(email: string) {
@@ -109,6 +108,29 @@ class UserService {
     const [access_token, refresh_token] = await this.signAccessAndRefreshToken(user_id)
 
     return { access_token, refresh_token }
+  }
+  async resendVerifyEmail(user_id: string) {
+    const email_verify_token = await this.signEmailVerifyToken(user_id)
+
+    // Gỉa bộ gửi email
+    console.log('ReSend verify email: ', email_verify_token)
+
+    // Cập nhật lại giá trị email_verify_token trong document user
+    await databaseService.users.updateOne(
+      { _id: new ObjectId(user_id) },
+      {
+        $set: {
+          email_verify_token
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+
+    return {
+      message: USERS_MESSAGES.RESEND_VERIFY_EMAIL_SUCCESS
+    }
   }
 }
 

@@ -10,7 +10,8 @@ import {
   loginController,
   registerController,
   logoutController,
-  emailVerifyController
+  verifyEmailController,
+  resendVerifyEmailController
 } from '~/controllers/users.controllers'
 import validate from '~/utils/validate'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -24,6 +25,15 @@ router.post(
   validate(refreshTokenValidator),
   wrapRequestHandler(logoutController)
 )
-router.post('/email-verify', validate(emailVerifyToken), wrapRequestHandler(emailVerifyController))
+router.post('/email-verify', validate(emailVerifyToken), wrapRequestHandler(verifyEmailController))
+
+/**
+ * Description. Verify email when user client click on the link in email
+ * Path: /resend-verify-email
+ * Method: POST
+ * Header: { Authorization: Bearer <access_token> }
+ * Body: {}
+ */
+router.post('/resend-verify-email', validate(accessTokenValidator), wrapRequestHandler(resendVerifyEmailController))
 
 export default router
