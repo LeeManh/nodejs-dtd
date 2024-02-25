@@ -6,6 +6,7 @@ import { USERS_MESSAGES } from '~/constants/message'
 import databaseService from '~/services/database.services'
 import {
   ForgotPasswordReqBody,
+  GetProfileReqParams,
   ResetPasswordReqBody,
   TokenPayload,
   VerifyForgotPasswordReqBody
@@ -146,6 +147,17 @@ export const updateMeController = async (req: Request, res: Response, next: Next
 
   return res.json({
     message: USERS_MESSAGES.UPDATE_ME_SUCCESS,
+    result: user
+  })
+}
+
+export const getProfileController = async (req: Request<GetProfileReqParams>, res: Response, next: NextFunction) => {
+  const { username } = req.params
+
+  const user = await userService.getProfile(username)
+
+  return res.json({
+    message: USERS_MESSAGES.GET_PROFILE_SUCCESS,
     result: user
   })
 }

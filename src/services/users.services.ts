@@ -8,6 +8,8 @@ import { ObjectId } from 'mongodb'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import { config } from 'dotenv'
 import { USERS_MESSAGES } from '~/constants/message'
+import { ErrorWithStatus } from '~/models/Errors'
+import HTTP_STATUS from '~/constants/httpStatus'
 config()
 class UserService {
   private signAccessToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
@@ -67,16 +69,17 @@ class UserService {
   }
 
   async register(payload: RegisterReqBody) {
+    const user_id = new ObjectId().toString()
+
     // create new user
-    const user = await databaseService.users.insertOne(
+    await databaseService.users.insertOne(
       new User({
         ...payload,
+        username: `user${user_id}`,
         date_of_birth: new Date(payload.date_of_birth),
         password: hashPassword(payload.password)
       })
     )
-
-    const user_id = user.insertedId.toString()
 
     // sign email verify token
     const email_verify_token = await this.signEmailVerifyToken({ user_id, verify: UserVerifyStatus.Unverified })
@@ -226,6 +229,29 @@ class UserService {
         }
       }
     )
+
+    return user
+  }
+  async getProfile(username: string) {
+    const user = await databaseService.users.findOne(
+      { username },
+      {
+        projection: {
+          password: 0,
+          email_verify_token: 0,
+          forgot_password_token: 0,
+          create_at: 0,
+          updated_at: 0
+        }
+      }
+    )
+
+    if (!user) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
 
     return user
   }
