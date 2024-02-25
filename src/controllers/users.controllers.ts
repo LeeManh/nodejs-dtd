@@ -13,6 +13,8 @@ import {
 import HTTP_STATUS from '~/constants/httpStatus'
 import { UserVerifyStatus } from '~/constants/enum'
 import { ParamsDictionary } from 'express-serve-static-core'
+import { pick } from 'lodash'
+import { body } from 'express-validator'
 
 export const loginController = async (req: Request, res: Response) => {
   const user = (req as any).user as User
@@ -138,5 +140,12 @@ export const getMeController = async (req: Request, res: Response, next: NextFun
 }
 
 export const updateMeController = async (req: Request, res: Response, next: NextFunction) => {
-  return res.json({})
+  const { user_id } = req.decoded_authorization as TokenPayload
+
+  const user = await userService.updateMe(user_id, req.body)
+
+  return res.json({
+    message: USERS_MESSAGES.UPDATE_ME_SUCCESS,
+    result: user
+  })
 }

@@ -8,7 +8,8 @@ import {
   forgotPasswordValidator,
   verifyForgotPasswordTokenValidator,
   resetPasswordValidator,
-  verifiedUserValidator
+  verifiedUserValidator,
+  updateMeValidator
 } from '~/middlewares/users.middlewares'
 import {
   loginController,
@@ -24,6 +25,8 @@ import {
 } from '~/controllers/users.controllers'
 import validate from '~/utils/validate'
 import { wrapRequestHandler } from '~/utils/handlers'
+import { UpdateMeReqBody } from '~/models/requests/User.request'
+import { filterMiddleware } from '~/middlewares/common.middlewares'
 const router = express.Router()
 
 router.post('/login', loginValidator, wrapRequestHandler(loginController))
@@ -83,6 +86,22 @@ router.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
  * Header: { Authorization: Bearer <access_token> }
  * Body: UserSchema
  */
-router.patch('/me', accessTokenValidator, verifiedUserValidator, wrapRequestHandler(updateMeController))
+router.patch(
+  '/me',
+  accessTokenValidator,
+  verifiedUserValidator,
+  updateMeValidator,
+  filterMiddleware<UpdateMeReqBody>([
+    'name',
+    'date_of_birth',
+    'bio',
+    'location',
+    'website',
+    'username',
+    'avatar',
+    'cover_photo'
+  ]),
+  wrapRequestHandler(updateMeController)
+)
 
 export default router
