@@ -1,4 +1,5 @@
 import { checkSchema } from 'express-validator'
+import { ObjectId } from 'mongodb'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/message'
 import { ErrorWithStatus } from '~/models/Errors'
@@ -272,6 +273,55 @@ export const forgotPasswordValidator = validate(
               throw new Error(USERS_MESSAGES.USER_NOT_FOUND)
             }
             req.user = user
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const verifyForgotPasswordTokenValidator = validate(
+  checkSchema(
+    {
+      forgot_password_token: {
+        trim: true,
+        custom: {
+          options: async (value: string, { req }) => {
+            // check required token
+            if (!value) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.FORGOT_PASSWORD_TOKEN_IS_REQUIRED,
+                status: HTTP_STATUS.UNAUTHORIZED
+              })
+            }
+
+            // decode token
+            const decoded_forgot_password_token = await verifyToken({
+              token: value,
+              secretOrPrivateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+            })
+
+            const { user_id } = decoded_forgot_password_token
+
+            // find user by user_id
+            const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+
+            if (user === null) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.USER_NOT_FOUND,
+                status: HTTP_STATUS.UNAUTHORIZED
+              })
+            }
+
+            if (user.forgot_password_token !== value) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.INVALID_FORGOT_PASSWORD_TOKEN,
+                status: HTTP_STATUS.UNAUTHORIZED
+              })
+            }
+
             return true
           }
         }
