@@ -17,21 +17,17 @@ import {
   resendVerifyEmailController,
   forgotPasswordController,
   verifyForgotPasswordController,
-  resetPasswordController
+  resetPasswordController,
+  getMeController
 } from '~/controllers/users.controllers'
 import validate from '~/utils/validate'
 import { wrapRequestHandler } from '~/utils/handlers'
 const router = express.Router()
 
-router.post('/login', validate(loginValidator), wrapRequestHandler(loginController))
-router.post('/register', validate(registerValidator), wrapRequestHandler(registerController))
-router.post(
-  '/logout',
-  validate(accessTokenValidator),
-  validate(refreshTokenValidator),
-  wrapRequestHandler(logoutController)
-)
-router.post('/email-verify', validate(emailVerifyToken), wrapRequestHandler(verifyEmailController))
+router.post('/login', loginValidator, wrapRequestHandler(loginController))
+router.post('/register', registerValidator, wrapRequestHandler(registerController))
+router.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
+router.post('/email-verify', emailVerifyToken, wrapRequestHandler(verifyEmailController))
 
 /**
  * Description. Verify email when user client click on the link in email
@@ -40,7 +36,7 @@ router.post('/email-verify', validate(emailVerifyToken), wrapRequestHandler(veri
  * Header: { Authorization: Bearer <access_token> }
  * Body: {}
  */
-router.post('/resend-verify-email', validate(accessTokenValidator), wrapRequestHandler(resendVerifyEmailController))
+router.post('/resend-verify-email', accessTokenValidator, wrapRequestHandler(resendVerifyEmailController))
 
 /**
  * Description. Submit email to reset password, send email to user
@@ -69,5 +65,13 @@ router.post(
  * Body: {forgot_password_token: string, password: string, confirm_password: string}
  */
 router.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
+
+/**
+ * Description: Get my profile
+ * Path: /me
+ * Method: GET
+ * Header: { Authorization: Bearer <access_token> }
+ */
+router.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
 
 export default router
