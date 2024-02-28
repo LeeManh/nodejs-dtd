@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb'
 import { USERS_MESSAGES } from '~/constants/message'
 import databaseService from '~/services/database.services'
 import {
+  ChangePasswordReqBody,
   FollowReqBody,
   ForgotPasswordReqBody,
   GetProfileReqParams,
@@ -183,6 +184,19 @@ export const unFollowController = async (req: Request<UnFollowReqParams>, res: R
   const { user_id: followed_user_id } = req.params
 
   const result = await userService.unFollow(user_id, followed_user_id)
+
+  return res.json(result)
+}
+
+export const changePasswordController = async (
+  req: Request<ParamsDictionary, any, ChangePasswordReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { password } = req.body
+
+  const result = await userService.changePassword(user_id, password)
 
   return res.json(result)
 }
