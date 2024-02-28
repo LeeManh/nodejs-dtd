@@ -10,6 +10,7 @@ import {
   GetProfileReqParams,
   ResetPasswordReqBody,
   TokenPayload,
+  UnFollowReqParams,
   VerifyForgotPasswordReqBody
 } from '~/models/requests/User.request'
 import HTTP_STATUS from '~/constants/httpStatus'
@@ -173,6 +174,15 @@ export const followController = async (
   const { followed_user_id } = req.body
 
   const result = await userService.follow(user_id, followed_user_id)
+
+  return res.json(result)
+}
+
+export const unFollowController = async (req: Request<UnFollowReqParams>, res: Response, next: NextFunction) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { user_id: followed_user_id } = req.params
+
+  const result = await userService.unFollow(user_id, followed_user_id)
 
   return res.json(result)
 }
