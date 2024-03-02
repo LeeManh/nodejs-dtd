@@ -62,5 +62,6 @@ export const USERS_MESSAGES = {
     'Username must be 4-15 characters long and contain only letters, numbers, underscores, not only numbers',
   USERNAME_EXISTED: 'Username already exists',
   OLD_PASSWORD_IS_INCORRECT: 'Old password is incorrect',
-  CHANGE_PASSWORD_SUCCESS: 'Change password success'
+  CHANGE_PASSWORD_SUCCESS: 'Change password success',
+  EMAIL_NOT_VERIFIED: 'Email not verified'
 } as const

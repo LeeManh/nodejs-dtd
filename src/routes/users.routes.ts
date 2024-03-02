@@ -28,7 +28,8 @@ import {
   getProfileController,
   followController,
   unFollowController,
-  changePasswordController
+  changePasswordController,
+  oAuthController
 } from '~/controllers/users.controllers'
 import validate from '~/utils/validate'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -161,5 +162,13 @@ router.put(
   changePasswordValidator,
   wrapRequestHandler(changePasswordController)
 )
+
+/**
+ * Description. OAuth with Google
+ * Path: /oauth/google
+ * Method: GET
+ * Query: { code: string }
+ */
+router.get('/oauth/google', wrapRequestHandler(oAuthController))
 
 export default router

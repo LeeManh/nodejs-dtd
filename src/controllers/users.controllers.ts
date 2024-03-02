@@ -17,8 +17,8 @@ import {
 import HTTP_STATUS from '~/constants/httpStatus'
 import { UserVerifyStatus } from '~/constants/enum'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { pick } from 'lodash'
-import { body } from 'express-validator'
+import { config } from 'dotenv'
+config()
 
 export const loginController = async (req: Request, res: Response) => {
   const user = (req as any).user as User
@@ -199,4 +199,16 @@ export const changePasswordController = async (
   const result = await userService.changePassword(user_id, password)
 
   return res.json(result)
+}
+
+export const oAuthController = async (req: Request, res: Response, next: NextFunction) => {
+  const { code } = req.query
+
+  const result = await userService.oAuth(code as string)
+
+  const { access_token, refresh_token, newUser } = result
+
+  const urlRedirect = `${process.env.CLIENT_REDIRECT_URI}?access_token=${access_token}&refresh_token=${refresh_token}&newUser=${newUser}`
+
+  return res.redirect(urlRedirect)
 }

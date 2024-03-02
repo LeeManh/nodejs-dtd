@@ -21,6 +21,16 @@ interface UserType {
   cover_photo?: string
 }
 
+export interface IUserInfo {
+  id: string
+  email: string
+  verified_email: boolean
+  name: string
+  given_name: string
+  picture: string
+  locale: string
+}
+
 export default class User {
   _id?: ObjectId
   name: string
