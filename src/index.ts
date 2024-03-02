@@ -3,10 +3,13 @@ import usersRouter from './routes/users.routes'
 import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import mediasRouter from './routes/medias.routes'
+import { initFolder } from './utils/file'
 const app = express()
 
 // Connect to MongoDB
 databaseService.connect()
+
+initFolder()
 
 // It parses incoming requests with JSON payloads and is based on body-parser.
 app.use(express.json())
