@@ -132,6 +132,10 @@ class UserService {
       verify: UserVerifyStatus.Verified
     })
 
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({ user_id: new ObjectId(user_id), token: refresh_token })
+    )
+
     return { access_token, refresh_token }
   }
   async resendVerifyEmail(user_id: string) {
