@@ -63,5 +63,6 @@ export const USERS_MESSAGES = {
   USERNAME_EXISTED: 'Username already exists',
   OLD_PASSWORD_IS_INCORRECT: 'Old password is incorrect',
   CHANGE_PASSWORD_SUCCESS: 'Change password success',
-  EMAIL_NOT_VERIFIED: 'Email not verified'
+  EMAIL_NOT_VERIFIED: 'Email not verified',
+  FILE_NOT_FOUND: 'File not found'
 } as const

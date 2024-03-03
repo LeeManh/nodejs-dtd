@@ -6,6 +6,7 @@ import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
 import { config } from 'dotenv'
 import { UPLOAD_DIR } from './constants/dir'
+import staticRouter from './routes/static.routes'
 
 config()
 
@@ -17,7 +18,7 @@ databaseService.connect()
 
 initFolder()
 
-app.use('/static', express.static(UPLOAD_DIR))
+// app.use('/static', express.static(UPLOAD_DIR))
 
 // It parses incoming requests with JSON payloads and is based on body-parser.
 app.use(express.json())
@@ -25,6 +26,7 @@ app.use(express.json())
 // routes
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
+app.use('/static', staticRouter)
 
 // Error handling middleware
 app.use(defaultErrorHandler)

@@ -18,8 +18,8 @@ class MediasService {
     // fs.unlinkSync(file.filepath) // remove the original file
 
     const linkImage = isProduction
-      ? `${process.env.HOST}/static/${newName}.jpg`
-      : `http://localhost:${process.env.PORT}/static/${newName}.jpg`
+      ? `${process.env.HOST}/static/image/${newName}.jpg`
+      : `http://localhost:${process.env.PORT}/static/image/${newName}.jpg`
 
     return linkImage
   }
