@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { uploadImageController, uploadVideoController } from '~/controllers/medias.controller'
 import { accessTokenValidator, verifiedUserValidator } from '~/middlewares/users.middlewares'
+import { uploadVideoController, uploadImageController } from '~/controllers/medias.controller'
 import { wrapRequestHandler } from '~/utils/handlers'
 
 const mediasRouter = Router()

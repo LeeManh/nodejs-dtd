@@ -64,5 +64,6 @@ export const USERS_MESSAGES = {
   OLD_PASSWORD_IS_INCORRECT: 'Old password is incorrect',
   CHANGE_PASSWORD_SUCCESS: 'Change password success',
   EMAIL_NOT_VERIFIED: 'Email not verified',
-  FILE_NOT_FOUND: 'File not found'
+  FILE_NOT_FOUND: 'File not found',
+  INVALID_RANGE: 'Invalid range'
 } as const
