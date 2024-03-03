@@ -15,11 +15,11 @@ class MediasService {
     const newPath = path.resolve(UPLOAD_DIR, `${newName}.jpg`)
     await sharp(file.filepath).jpeg().toFile(newPath)
 
-    fs.unlinkSync(file.filepath) // remove the original file
+    // fs.unlinkSync(file.filepath) // remove the original file
 
     const linkImage = isProduction
-      ? `${process.env.HOST}/medias/${newName}.jpg`
-      : `http://localhost:${process.env.PORT}/medias/${newName}.jpg`
+      ? `${process.env.HOST}/static/${newName}.jpg`
+      : `http://localhost:${process.env.PORT}/static/${newName}.jpg`
 
     return linkImage
   }
