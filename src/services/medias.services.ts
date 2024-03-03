@@ -4,6 +4,9 @@ import { Request } from 'express'
 import { getNameFromFullname, handleUploadSingleImage } from '~/utils/file'
 import { UPLOAD_DIR } from '~/constants/dir'
 import fs from 'fs'
+import { isProduction } from '~/constants/config'
+import { config } from 'dotenv'
+config()
 
 class MediasService {
   async handleUploadSingleImage(req: Request) {
@@ -14,7 +17,11 @@ class MediasService {
 
     fs.unlinkSync(file.filepath) // remove the original file
 
-    return `http://localhost:3000/uploads/${newName}.jpg`
+    const linkImage = isProduction
+      ? `${process.env.HOST}/medias/${newName}.jpg`
+      : `http://localhost:${process.env.PORT}/medias/${newName}.jpg`
+
+    return linkImage
   }
 }
 
