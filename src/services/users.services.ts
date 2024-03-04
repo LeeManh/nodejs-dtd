@@ -392,6 +392,34 @@ class UserService {
 
     return { ...data, newUser: 1, verify: UserVerifyStatus.Unverified }
   }
+
+  async refreshToken({
+    user_id,
+    verify,
+    refresh_token
+  }: {
+    user_id: string
+    verify: UserVerifyStatus
+    refresh_token: string
+  }) {
+    // 1.sign new access token and refresh token
+    // 2.delete old refresh token
+    const [new_access_token, new_refresh_token] = await Promise.all([
+      this.signAccessToken({ user_id, verify }),
+      this.signRefreshToken({ user_id, verify }),
+      databaseService.refreshTokens.deleteOne({ token: refresh_token })
+    ])
+
+    // 3.insert refresh token
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({ token: new_refresh_token, user_id: new ObjectId(user_id), created_at: new Date() })
+    )
+
+    return {
+      access_token: new_access_token,
+      refresh_token: new_refresh_token
+    }
+  }
 }
 
 const userService = new UserService()

@@ -9,6 +9,7 @@ import {
   FollowReqBody,
   ForgotPasswordReqBody,
   GetProfileReqParams,
+  RefreshTokenReqBody,
   ResetPasswordReqBody,
   TokenPayload,
   UnFollowReqParams,
@@ -211,4 +212,20 @@ export const oAuthController = async (req: Request, res: Response, next: NextFun
   const urlRedirect = `${process.env.CLIENT_REDIRECT_URI}?access_token=${access_token}&refresh_token=${refresh_token}&newUser=${newUser}`
 
   return res.redirect(urlRedirect)
+}
+
+export const refreshTokenController = async (
+  req: Request<ParamsDictionary, any, RefreshTokenReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id, verify } = req.decoded_refresh_token as TokenPayload
+  const { refresh_token } = req.body
+
+  const result = await userService.refreshToken({ user_id, verify, refresh_token })
+
+  return res.json({
+    message: USERS_MESSAGES.REFRESH_TOKEN_SUCCESS,
+    result
+  })
 }

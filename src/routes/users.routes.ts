@@ -29,7 +29,8 @@ import {
   followController,
   unFollowController,
   changePasswordController,
-  oAuthController
+  oAuthController,
+  refreshTokenController
 } from '~/controllers/users.controllers'
 import validate from '~/utils/validate'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -170,5 +171,13 @@ router.put(
  * Query: { code: string }
  */
 router.get('/oauth/google', wrapRequestHandler(oAuthController))
+
+/**
+ * Description. Refresh Token
+ * Path: /refresh-token
+ * Method: POST
+ * Body: { refresh_token: string }
+ */
+router.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(refreshTokenController))
 
 export default router
